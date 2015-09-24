@@ -7,7 +7,6 @@ struct FileInfo{
     char* name;
 };
 
-char fileExplorerMenu();
 void fileExplorer();
 struct FileInfo* getFileInfo(char* path, int* count);
 void printFileInfos(struct FileInfo* fileInfo, int count);

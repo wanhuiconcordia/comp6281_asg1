@@ -4,35 +4,14 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
-
+#include <tools.h>
 static char currentDir[200] = ".";
 
-char resolved_path[100];
-realpath(".", resolved_path);
-printf("\n%s\n",resolved_path);
+//char resolved_path[100];
+//realpath(".", resolved_path);
+//printf("\n%s\n",resolved_path);
 
-char fileExplorerMenu(){
-    system("stty raw");
-    char selection;
-    Selection:
-    while(1){
-        system("clear");
-        printf("\n\r+++++++++++++++++++++++\n\r");
-        printf("File Explorer\n\r");
-        printf("  1. File List (sorted by name)\n\r");
-        printf("  2. File List (sorted by size)\n\r");
-        printf("  3. Change Directory\n\r");
-        printf("  4. Main Menu\n\r");
-        printf("+++++++++++++++++++++++\n\r");
-        printf("Selection:");
-        selection = getchar();
-        if(selection >= '1' && selection <= '4'){
-            break;
-        }
-    }
-    system("stty cooked");
-    return selection;
-}
+
 
 void fileExplorer(){
     int loopFlag = 1;
