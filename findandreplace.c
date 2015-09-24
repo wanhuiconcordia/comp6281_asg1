@@ -1,7 +1,90 @@
 #include "findandreplace.h"
 #include "tools.h"
 
+
 void findAndReplace(){
+    printf("\n\rFile Name:");
+    char fileName[200];
+    scanf("%s", fileName);
+
+    printf("Enter text to find:");
+    char originWord[200];
+    scanf("%s", originWord);
+
+    printf("Replace text with:");
+    char replaceWord[200];
+    scanf("%s", replaceWord);
+
+    FILE * pFile = fopen (fileName , "r" );
+
+    if (pFile == NULL) {
+        perror ("");
+    }else{
+        char * line = NULL;
+        size_t len = 0;
+        ssize_t read;
+        unsigned paragraphIndex = 1;
+        struct Paragraph* header = malloc(sizeof(struct Paragraph));
+        struct Paragraph* paragraph = header;
+        while ((read = getline(&line, &len, pFile)) != -1) {
+            paragraph->next = malloc(sizeof(struct Paragraph));
+            paragraph = paragraph->next;
+            paragraph->text = line;
+            paragraph->paragraphIndex = paragraphIndex++;
+        }
+        paragraph->next = NULL;
+        displayParagraph(header->next);
+        //find(header->next, originWord);
+        fclose (pFile);
+
+
+    }
+    system("stty raw");
+    printf("\r\nPress any key to continue...");
+    getchar();
+    getchar();
+    system("stty cooked");
+    printf("\n\n return from findAndReplace.\n");
+}
+
+void displayParagraph(struct Paragraph* firstParagraph){
+    struct Paragraph* currentParagraph = firstParagraph;
+    while(currentParagraph){
+        printf("%s", currentParagraph->text);
+
+        currentParagraph = currentParagraph->next;
+
+    }
+}
+
+void find(struct Paragraph* firstParagraph, char * key){
+    struct Paragraph* currentParagraph = firstParagraph;
+    printf("OLD  FILE:");
+    while(currentParagraph){
+        printf("Try to find [%s] from :%s\n", key, currentParagraph->text);
+        for(int i = 0; i < strlen(currentParagraph->text) - strlen(key); i++){
+            if(match(currentParagraph->text + i, key, strlen(key))){
+                printf("%s\n", currentParagraph->text);
+                break;
+            }
+        }
+        printf("before paragraph = paragraph->next;\n");
+        currentParagraph = currentParagraph->next;
+        printf("after paragraph = paragraph->next;\n");
+    }
+}
+
+
+int match(char* str1, char* str2, int length){
+    for(int i = 0; i < length; i++){
+        if((*(str1 + i)) ^ (*(str2 + i))){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void findAndReplace_backup(){
     printf("\n\rFile Name:");
     char fileName[200];
     scanf("%s", fileName);
