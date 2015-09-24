@@ -24,6 +24,7 @@ int main(void)
         case '4':
             loopFlag = 0;
             cleanLog();
+            printf("\r\n");
             break;
         default:
             break;
@@ -31,26 +32,3 @@ int main(void)
     }
     return 0;
 }
-
-
-//   int main(void)
-//   {
-//       FILE * fp;
-//       char * line = NULL;
-//       size_t len = 0;
-//       ssize_t read;
-
-//       fp = fopen("doc.txt", "r");
-//       if (fp == NULL)
-//           exit(EXIT_FAILURE);
-
-//       while ((read = getline(&line, &len, fp)) != -1) {
-//           printf("Retrieved line of length %zu :\n", read);
-//           printf("%s", line);
-//       }
-
-//       fclose(fp);
-//       if (line)
-//           free(line);
-//       exit(EXIT_SUCCESS);
-//   }

@@ -1,4 +1,6 @@
 #include "tools.h"
+#include <stdio.h>
+
 char mainMenu(){
     system("stty raw");
     char selection;

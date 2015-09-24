@@ -7,32 +7,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct WordInfo{
-    char* word;
-    char* replacedWord;
-    unsigned lineIndex;
-    struct WordInfo* next;
-};
-
 struct Paragraph{
     char *text;
-    unsigned paragraphIndex;
+    unsigned index;
     struct Paragraph* next;
 };
 
 void findAndReplace();
-
+struct Paragraph* parseParagraph(char*);
+char* raadFile(char* fileName);
+void printDoc(struct Paragraph*);
 void find(struct Paragraph* firstParagraph, char* key);
-
-void displayParagraph(struct Paragraph* firstParagraph);
-
+void cleanDoc(struct Paragraph* header);
 int match(char* str1, char* str2, int length);
-void findAndReplace_backup();
-
-struct WordInfo* parseWordInfo(char* buffer, char *docEnd);
-
-void cleanDoc(struct WordInfo* header);
-
-
 
 #endif // FINDANDREPLACE_H
