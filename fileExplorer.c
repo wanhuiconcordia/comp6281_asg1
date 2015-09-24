@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
-#include <tools.h>
+#include "tools.h"
 static char currentDir[200] = ".";
 
 //char resolved_path[100];
