@@ -19,7 +19,9 @@ void findAndReplace(){
     if(docText){
         struct Paragraph* header = parseParagraph(docText);
         free(docText);
+//        printDoc(header);
         find(header->next, originWord);
+//        replace(header->next, originWord, replaceWord);
         cleanDoc(header);
     }
 
@@ -44,8 +46,9 @@ struct Paragraph* parseParagraph(char* docText){
                 paragraph = paragraph->next;
                 paragraph->index = paraIndex;
                 paragraph->next = NULL;
-                paragraph->text = calloc((paraEnd - paraStart) + 2, sizeof(char));
-                memcpy(paragraph->text, paraStart, paraEnd - paraStart + 1);
+                paragraph->block = calloc(1, sizeof(struct Block));
+                paragraph->block->text = calloc((paraEnd - paraStart) + 2, sizeof(char));
+                memcpy(paragraph->block->text, paraStart, paraEnd - paraStart + 1);
                 paraStart = paraEnd + 1;
                 paraIndex++;
             }
@@ -89,28 +92,51 @@ char* raadFile(char* fileName){
 
 void printDoc(struct Paragraph* paragraph){
     while(paragraph){
-        printf("%s", paragraph->text);
+        if(paragraph->block && paragraph->block->text){
+            printf("%s", paragraph->block->text);
+        }
         paragraph = paragraph->next;
     }
 }
 
-
-
-
-void find(struct Paragraph* firstParagraph, char * key){
-    struct Paragraph* currentParagraph = firstParagraph;
+void find(struct Paragraph* paragraph, char * originWord){
+    struct Paragraph* currentParagraph = paragraph;
     printf("OLD  FILE:\n");
     while(currentParagraph){
-        for(unsigned i = 0; i < strlen(currentParagraph->text) - strlen(key); i++){
-            if(match(currentParagraph->text + i, key, strlen(key))){
-                printf("line[%d]\t%s\n", currentParagraph->index, currentParagraph->text);
-                break;
+        if(paragraph->block && paragraph->block->text){
+            int offset = strlen(currentParagraph->block->text) - strlen(originWord);
+            if(offset > 0){
+                for(unsigned i = 0; i <= offset; i++){
+                    if(match(currentParagraph->block->text + i, originWord, strlen(originWord))){
+                        printf("line[%d]\t%s\n", currentParagraph->index, currentParagraph->block->text);
+                        break;
+                    }
+                }
             }
         }
         currentParagraph = currentParagraph->next;
     }
 }
 
+
+void replace(struct Paragraph* firstParagraph, char* originWord, char* replaceWord){
+    struct Paragraph* currentParagraph = paragraph;
+    printf("OLD  FILE:\n");
+    while(currentParagraph){
+        if(paragraph->block && paragraph->block->text){
+            int offset = strlen(currentParagraph->block->text) - strlen(originWord);
+            if(offset > 0){
+                for(unsigned i = 0; i <= offset; i++){
+                    if(match(currentParagraph->block->text + i, originWord, strlen(originWord))){
+                        printf("line[%d]\t%s\n", currentParagraph->index, currentParagraph->block->text);
+                        break;
+                    }
+                }
+            }
+        }
+        currentParagraph = currentParagraph->next;
+    }
+}
 
 int match(char* str1, char* str2, int length){
     for(int i = 0; i < length; i++){
@@ -122,15 +148,20 @@ int match(char* str1, char* str2, int length){
 }
 
 //clean up all the malloced memory
-void cleanDoc(struct Paragraph* paraHeader){
-    struct Paragraph* paragraph = paraHeader;
-    while(paragraph){
-        if(paragraph->text){
-            free(paragraph->text);
+void cleanDoc(struct Paragraph* paragraph){
+    struct Paragraph* currentParagraph = paragraph;
+    while(currentParagraph){
+        if(currentParagraph->block){
+            if(currentParagraph->block->text){
+                free(currentParagraph->block->text);
+                currentParagraph->block->text = NULL;
+            }
+            free(currentParagraph->block);
+            currentParagraph->block = NULL;
         }
-        paragraph = paragraph->next;
-        free(paraHeader);
-        paraHeader = paragraph;
+        currentParagraph = currentParagraph->next;
+        free(paragraph);
+        paragraph = currentParagraph;
     }
 }
 
