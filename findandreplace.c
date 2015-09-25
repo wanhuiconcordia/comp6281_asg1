@@ -20,8 +20,9 @@ void findAndReplace(){
         struct Paragraph* header = parseParagraph(docText);
         free(docText);
 //        printDoc(header);
-        find(header->next, originWord);
-//        replace(header->next, originWord, replaceWord);
+//        find(header->next, originWord);
+        replace(header->next, originWord, replaceWord);
+        printDoc(header);
         cleanDoc(header);
     }
 
@@ -92,8 +93,12 @@ char* raadFile(char* fileName){
 
 void printDoc(struct Paragraph* paragraph){
     while(paragraph){
-        if(paragraph->block && paragraph->block->text){
-            printf("%s", paragraph->block->text);
+        struct Block* currentBlock = paragraph->block;
+        while(currentBlock){
+            if(currentBlock->text){
+                printf("%s", currentBlock->text);
+            }
+            currentBlock = currentBlock->next;
         }
         paragraph = paragraph->next;
     }
@@ -119,20 +124,48 @@ void find(struct Paragraph* paragraph, char * originWord){
 }
 
 
-void replace(struct Paragraph* firstParagraph, char* originWord, char* replaceWord){
+void replace(struct Paragraph* paragraph, char* originWord, char* replaceWord){
     struct Paragraph* currentParagraph = paragraph;
-    printf("OLD  FILE:\n");
+
     while(currentParagraph){
-        if(paragraph->block && paragraph->block->text){
-            int offset = strlen(currentParagraph->block->text) - strlen(originWord);
-            if(offset > 0){
-                for(unsigned i = 0; i <= offset; i++){
-                    if(match(currentParagraph->block->text + i, originWord, strlen(originWord))){
-                        printf("line[%d]\t%s\n", currentParagraph->index, currentParagraph->block->text);
-                        break;
+        struct Block* currentBlock = currentParagraph->block;
+        while(currentBlock){
+            if(currentBlock->text){
+                int offset = strlen(currentBlock->text) - strlen(originWord);
+                if(offset > 0){
+                    for(unsigned i = 0; i <= offset; i++){
+                        if(match(currentBlock->text + i, originWord, strlen(originWord))){
+                            struct Block* newBlock1 = calloc(1, sizeof(struct Block));
+                            if(i == 0){
+                                newBlock1->text = calloc(strlen(currentBlock->text) - strlen(originWord) + 1, sizeof(char));
+                                strcpy(newBlock1->text, currentBlock->text + strlen(originWord));
+                                strcpy(currentBlock->text, replaceWord);
+                                newBlock1->next = currentBlock->next;
+                                currentBlock->next = newBlock1;
+                            }else{
+                                newBlock1->text = calloc(strlen(replaceWord) + 1, sizeof(char));
+                                strcpy(newBlock1->text, replaceWord);
+                                if(i == offset){
+                                    currentBlock->text[offset] = 0;
+                                    newBlock1->next = currentBlock->next;
+                                    currentBlock->next = newBlock1;
+                                }else{
+                                    struct Block* newBlock2  = calloc(1, sizeof(struct Block));
+                                    newBlock2->text = calloc(strlen(currentBlock->text) - strlen(originWord) - i + 1, sizeof(char));
+                                    strcpy(newBlock2->text, currentBlock->text + i + strlen(originWord));
+                                    newBlock2->next = currentBlock->next;
+                                    newBlock1->next = newBlock2;
+                                    currentBlock->text[i] = 0;
+                                    currentBlock->next = newBlock1;
+                                    currentBlock = currentBlock->next;
+                                }
+                            }
+                            break;
+                        }
                     }
                 }
             }
+            currentBlock = currentBlock->next;
         }
         currentParagraph = currentParagraph->next;
     }
@@ -151,13 +184,15 @@ int match(char* str1, char* str2, int length){
 void cleanDoc(struct Paragraph* paragraph){
     struct Paragraph* currentParagraph = paragraph;
     while(currentParagraph){
-        if(currentParagraph->block){
-            if(currentParagraph->block->text){
-                free(currentParagraph->block->text);
-                currentParagraph->block->text = NULL;
+        struct Block* currentBlock = currentParagraph->block;
+        struct Block* block = currentBlock;
+        while(currentBlock){
+            if(currentBlock->text){
+                free(currentBlock->text);
             }
-            free(currentParagraph->block);
-            currentParagraph->block = NULL;
+            currentBlock = currentBlock->next;
+            free(block);
+            block = currentBlock;
         }
         currentParagraph = currentParagraph->next;
         free(paragraph);

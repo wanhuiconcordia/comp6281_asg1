@@ -23,9 +23,9 @@ void findAndReplace();
 struct Paragraph* parseParagraph(char*);
 char* raadFile(char* fileName);
 void printDoc(struct Paragraph*);
-void find(struct Paragraph* firstParagraph, char* key);
-void replace(struct Paragraph* firstParagraph, char* originWord, char* replaceWord);
-void cleanDoc(struct Paragraph* header);
+void find(struct Paragraph* paragraph, char* key);
+void replace(struct Paragraph* paragraph, char* originWord, char* replaceWord);
+void cleanDoc(struct Paragraph* paragraph);
 int match(char* str1, char* str2, int length);
 
 #endif // FINDANDREPLACE_H
