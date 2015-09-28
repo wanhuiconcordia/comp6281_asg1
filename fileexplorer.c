@@ -1,19 +1,41 @@
-#include "fileExplorer.h"
+#include "fileexplorer.h"
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
-#include "tools.h"
-static char currentDir[200] = ".";
+
+//extern char* currentDir;
 
 //char resolved_path[100];
 //realpath(".", resolved_path);
 //printf("\n%s\n",resolved_path);
 
 
+char fileExplorerMenu(){
+    system("stty raw");
+    char selection;
+    Selection:
+    while(1){
+        system("clear");
+        printf("\n\r+++++++++++++++++++++++\n\r");
+        printf("File Explorer\n\r");
+        printf("  1. File List (sorted by name)\n\r");
+        printf("  2. File List (sorted by size)\n\r");
+        printf("  3. Change Directory\n\r");
+        printf("  4. Main Menu\n\r");
+        printf("+++++++++++++++++++++++\n\r");
+        printf("Selection:");
+        selection = getchar();
+        if(selection >= '1' && selection <= '4'){
+            break;
+        }
+    }
+    system("stty cooked");
+    return selection;
+}
 
-void fileExplorer(){
+void fileExplorer(char* currentDir){
     int loopFlag = 1;
 
     int n = 0;
@@ -42,7 +64,7 @@ void fileExplorer(){
             system("stty cooked");
             break;
         case '3':
-            changeDir();
+            changeDir(currentDir);
             break;
         case '4':
             loopFlag = 0;
@@ -54,10 +76,58 @@ void fileExplorer(){
     }
 }
 
-void changeDir(){
-    printf("Directory name:");
-    scanf("%s", currentDir);
+void changeDir(char* currentDir){
+    char newDir[1000];
+    printf("Input Directory:");
+    scanf("%s", newDir);
+    if(strcmp(newDir, "") == 0){
+        return;
+    }else if(strcmp(newDir, ".") == 0){
+        return;
+    }else if(strcmp(newDir, "..") == 0
+             || strcmp(newDir, "../") == 0){
+        char* q = currentDir + strlen(currentDir);
+        while(q > currentDir){
+            if(*q == '/'){
+                *q = 0;
+                break;
+            }
+            q--;
+        }
+        printf("changed to up layer:%s\r\n", currentDir);
+    }else{
+        DIR *dir;
+        if(newDir[0] == '/'){
+            if ((dir = opendir (newDir)) != NULL) {
+                strcpy(currentDir, newDir);
+                printf("Directory is changed to: %s\r\n", currentDir);
+                closedir (dir);
+            }else{
+                printf("%s cannot be accessed.", newDir);
+            }
+        }else{
+            char tmpDir[1000];
+            strcpy(tmpDir, currentDir);
+            if(newDir[strlen(newDir) - 1] == '/'){
+                newDir[strlen(newDir) - 1] = 0;
+            }
+            strcat(tmpDir, "/");
+            strcat(tmpDir, newDir);
+            if ((dir = opendir (tmpDir)) != NULL) {
+                strcpy(currentDir, tmpDir);
+                printf("Directory is changed to: %s\r\n", currentDir);
+                closedir (dir);
+            }else{
+                printf("%s cannot be accessed.", tmpDir);
+            }
+        }
+    }
 
+    system("stty raw");
+    printf("Press any key to continue...");
+    getchar();
+    getchar();
+    system("stty cooked");
 }
 
 void cleanFileInfo(struct FileInfo* pFileInfo, int n){
@@ -68,6 +138,7 @@ void cleanFileInfo(struct FileInfo* pFileInfo, int n){
 }
 
 struct FileInfo* getFileInfo(char* path, int* count){
+    printf("current dir:%s\n", path);
     *count = 0;
     DIR *dir;
     struct dirent *ent;

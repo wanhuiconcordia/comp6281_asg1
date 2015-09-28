@@ -1,6 +1,4 @@
 #include "findandreplace.h"
-#include "tools.h"
-
 
 void findAndReplace(){
     printf("\n\rFile Name:");

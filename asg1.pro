@@ -3,15 +3,14 @@ CONFIG += console c11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.c \
+SOURCES += \
     log.c \
-    fileExplorer.c \
-    tools.c \
-    findandreplace.c
+    findandreplace.c \
+    fileexplorer.c \
+    utilities.c
 
 HEADERS += \
     log.h \
-    fileExplorer.h \
-    tools.h \
-    findandreplace.h
+    findandreplace.h \
+    fileexplorer.h
 

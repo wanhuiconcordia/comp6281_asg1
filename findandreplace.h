@@ -1,9 +1,8 @@
 #ifndef FINDANDREPLACE_H
 #define FINDANDREPLACE_H
 
-
-#include <string.h>
 #include "findandreplace.h"
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
