@@ -1,15 +1,10 @@
 #include "fileexplorer.h"
+#include "log.h"
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
-
-//extern char* currentDir;
-
-//char resolved_path[100];
-//realpath(".", resolved_path);
-//printf("\n%s\n",resolved_path);
 
 
 char fileExplorerMenu(){
@@ -48,6 +43,7 @@ void fileExplorer(char* currentDir){
             sortBySize(pFileInfo, n);
             printFileInfos(pFileInfo, n);
             cleanFileInfo(pFileInfo, n);
+            depositLog("performed sort file by size.\n");
             system("stty raw");
             printf("Press any key to continue...");
             getchar();
@@ -58,6 +54,7 @@ void fileExplorer(char* currentDir){
             sortByName(pFileInfo, n);
             printFileInfos(pFileInfo, n);
             cleanFileInfo(pFileInfo, n);
+            depositLog("performed sort file by name.\n");
             system("stty raw");
             printf("Press any key to continue...");
             getchar();
@@ -68,7 +65,6 @@ void fileExplorer(char* currentDir){
             break;
         case '4':
             loopFlag = 0;
-            cleanLog();
             break;
         default:
             break;
@@ -102,10 +98,15 @@ void changeDir(char* currentDir){
 
     if ((dir = opendir (targetPath)) != NULL) {
         strcpy(currentDir, targetPath);
+        depositLog("change dir to:");
+        depositLog(targetPath);
+        depositLog("\n");
         printf("dir changed to: %s\r\n", targetPath);
         closedir (dir);
     }else{
         printf("%s cannot be accessed.\r\n", targetPath);
+        depositLog(targetPath);
+        depositLog("cannot be accessed\n");
     }
 
 

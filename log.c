@@ -26,8 +26,12 @@ void depositLog(char *str){
 
 void showLog(){
     if(size > 0){
-        printf("%s", data);
+        printf("\r\n%s\r\n", data);
     }
+    system("stty raw");
+    printf("Press any key to continue...");
+    getchar();
+    system("stty cooked");
 }
 
 void cleanLog(){
@@ -41,7 +45,5 @@ void getTimeStr(char* buffer, int size)
     time_t     now = time(0);
     struct tm  tstruct;
     tstruct = *localtime(&now);
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
     strftime(buffer, size, "%F %T\t", &tstruct);
 }

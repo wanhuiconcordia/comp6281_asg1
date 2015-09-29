@@ -516,7 +516,8 @@ compiler_clean:
 log.o: ../log.c ../log.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o log.o ../log.c
 
-fileexplorer.o: ../fileexplorer.c ../fileexplorer.h
+fileexplorer.o: ../fileexplorer.c ../fileexplorer.h \
+		../log.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o fileexplorer.o ../fileexplorer.c
 
 utilities.o: ../utilities.c ../log.h \
@@ -524,7 +525,8 @@ utilities.o: ../utilities.c ../log.h \
 		../find.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o utilities.o ../utilities.c
 
-find.o: ../find.c ../find.h
+find.o: ../find.c ../find.h \
+		../log.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o find.o ../find.c
 
 ####### Install

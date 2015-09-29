@@ -1,4 +1,5 @@
 #include "find.h"
+#include "log.h"
 
 void findAndReplace(char* currentDir){
     printf("\n\rFile Name:");
@@ -26,6 +27,9 @@ void findAndReplace(char* currentDir){
         replace(header->next, originWord, replaceWord);
         printDoc(header);
         cleanDoc(header);
+        depositLog("find and replace is performed successfully.\n");
+    }else{
+        depositLog("Failed to process finding and replacing.\n");
     }
 
     system("stty raw");
