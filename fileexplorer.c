@@ -77,57 +77,55 @@ void fileExplorer(char* currentDir){
 }
 
 void changeDir(char* currentDir){
-    char newDir[1000];
-    printf("Input Directory:");
-    scanf("%s", newDir);
-    if(strcmp(newDir, "") == 0){
+    char targetPath[1000];
+    strcpy(targetPath, currentDir);
+    char inputPath[1000];
+    printf("\r\nInput Directory:");
+    scanf("%s", inputPath);
+
+    if(strcmp(inputPath, ".") == 0){
         return;
-    }else if(strcmp(newDir, ".") == 0){
-        return;
-    }else if(strcmp(newDir, "..") == 0
-             || strcmp(newDir, "../") == 0){
-        char* q = currentDir + strlen(currentDir);
-        while(q > currentDir){
-            if(*q == '/'){
-                *q = 0;
-                break;
-            }
-            q--;
-        }
-        printf("changed to up layer:%s\r\n", currentDir);
+    }else if(strcmp(inputPath, "..") == 0){
+        resolveUpDir(targetPath);
+        chdir(targetPath);
+    }else if(strcmp(inputPath, "../") == 0){
+        resolveUpDir(targetPath);
+        chdir(targetPath);
+    }else if(inputPath[0] == '/'){
+        strcpy(targetPath, inputPath);
     }else{
-        DIR *dir;
-        if(newDir[0] == '/'){
-            if ((dir = opendir (newDir)) != NULL) {
-                strcpy(currentDir, newDir);
-                printf("Directory is changed to: %s\r\n", currentDir);
-                closedir (dir);
-            }else{
-                printf("%s cannot be accessed.", newDir);
-            }
-        }else{
-            char tmpDir[1000];
-            strcpy(tmpDir, currentDir);
-            if(newDir[strlen(newDir) - 1] == '/'){
-                newDir[strlen(newDir) - 1] = 0;
-            }
-            strcat(tmpDir, "/");
-            strcat(tmpDir, newDir);
-            if ((dir = opendir (tmpDir)) != NULL) {
-                strcpy(currentDir, tmpDir);
-                printf("Directory is changed to: %s\r\n", currentDir);
-                closedir (dir);
-            }else{
-                printf("%s cannot be accessed.", tmpDir);
-            }
-        }
+        strcat(targetPath, "/");
+        strcat(targetPath, inputPath);
     }
+
+    DIR *dir;
+
+    if ((dir = opendir (targetPath)) != NULL) {
+        strcpy(currentDir, targetPath);
+        printf("dir changed to: %s\r\n", targetPath);
+        closedir (dir);
+    }else{
+        printf("%s cannot be accessed.\r\n", targetPath);
+    }
+
+
 
     system("stty raw");
     printf("Press any key to continue...");
     getchar();
     getchar();
     system("stty cooked");
+}
+
+void resolveUpDir(char* targetPath){
+    char * p = targetPath + strlen(targetPath) - 1;
+    while(p > targetPath){
+        if(*p == '/'){
+            *p = 0;
+            break;
+        }
+        p--;
+    }
 }
 
 void cleanFileInfo(struct FileInfo* pFileInfo, int n){
@@ -138,7 +136,7 @@ void cleanFileInfo(struct FileInfo* pFileInfo, int n){
 }
 
 struct FileInfo* getFileInfo(char* path, int* count){
-    printf("current dir:%s\n", path);
+    printf("\r\ncurrent dir:%s\r\n", path);
     *count = 0;
     DIR *dir;
     struct dirent *ent;
@@ -168,8 +166,8 @@ struct FileInfo* getFileInfo(char* path, int* count){
             }else{
                 strcpy(pFileInfo[i].type, "Unknown");
             }
-//            pFileInfo[i].size = st.st_size % 1024;
-            pFileInfo[i].size = st.st_size;
+            pFileInfo[i].size = st.st_size % 1024;
+//            pFileInfo[i].size = st.st_size;
             i++;
         }
 

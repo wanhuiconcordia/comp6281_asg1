@@ -1,9 +1,13 @@
-#include "findandreplace.h"
+#include "find.h"
 
-void findAndReplace(){
+void findAndReplace(char* currentDir){
     printf("\n\rFile Name:");
     char fileName[200];
     scanf("%s", fileName);
+    char fullFileName[1200];
+    strcpy(fullFileName, currentDir);
+    strcat(fullFileName, "/");
+    strcat(fullFileName, fileName);
 
     printf("Enter text to find:");
     char originWord[200];
@@ -13,12 +17,12 @@ void findAndReplace(){
     char replaceWord[200];
     scanf("%s", replaceWord);
 
-    char* docText = raadFile(fileName);
+    char* docText = raadFile(fullFileName);
     if(docText){
         struct Paragraph* header = parseParagraph(docText);
         free(docText);
 //        printDoc(header);
-//        find(header->next, originWord);
+        find(header->next, originWord);
         replace(header->next, originWord, replaceWord);
         printDoc(header);
         cleanDoc(header);
@@ -104,14 +108,14 @@ void printDoc(struct Paragraph* paragraph){
 
 void find(struct Paragraph* paragraph, char * originWord){
     struct Paragraph* currentParagraph = paragraph;
-    printf("OLD  FILE:\n");
+    printf("OLD  FILE:\r\n");
     while(currentParagraph){
         if(paragraph->block && paragraph->block->text){
             int offset = strlen(currentParagraph->block->text) - strlen(originWord);
             if(offset > 0){
                 for(unsigned i = 0; i <= offset; i++){
                     if(match(currentParagraph->block->text + i, originWord, strlen(originWord))){
-                        printf("line[%d]\t%s\n", currentParagraph->index, currentParagraph->block->text);
+                        printf("%s", currentParagraph->block->text);
                         break;
                     }
                 }
@@ -124,7 +128,7 @@ void find(struct Paragraph* paragraph, char * originWord){
 
 void replace(struct Paragraph* paragraph, char* originWord, char* replaceWord){
     struct Paragraph* currentParagraph = paragraph;
-
+    printf("NEW FILE:\r\n");
     while(currentParagraph){
         struct Block* currentBlock = currentParagraph->block;
         while(currentBlock){
@@ -178,7 +182,6 @@ int match(char* str1, char* str2, int length){
     return 1;
 }
 
-//clean up all the malloced memory
 void cleanDoc(struct Paragraph* paragraph){
     struct Paragraph* currentParagraph = paragraph;
     while(currentParagraph){

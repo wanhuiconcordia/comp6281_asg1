@@ -17,5 +17,6 @@ void sortBySize(struct FileInfo* pFileInfo, const int count);
 void sortByName(struct FileInfo* pFileInfo, const int count);
 void cleanFileInfo(struct FileInfo* fileInfo, int n);
 void changeDir(char* currentDir);
+void resolveUpDir(char* targetPath);
 
 #endif // LIST_H

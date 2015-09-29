@@ -5,12 +5,12 @@ CONFIG -= qt
 
 SOURCES += \
     log.c \
-    findandreplace.c \
     fileexplorer.c \
-    utilities.c
+    utilities.c \
+    find.c
 
 HEADERS += \
     log.h \
-    findandreplace.h \
-    fileexplorer.h
+    fileexplorer.h \
+    find.h
 

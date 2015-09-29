@@ -1,7 +1,7 @@
 #ifndef FINDANDREPLACE_H
 #define FINDANDREPLACE_H
 
-#include "findandreplace.h"
+#include "find.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +18,7 @@ struct Paragraph{
 };
 
 
-void findAndReplace();
+void findAndReplace(char* currentDir);
 struct Paragraph* parseParagraph(char*);
 char* raadFile(char* fileName);
 void printDoc(struct Paragraph*);

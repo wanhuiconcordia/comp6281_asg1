@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include "log.h"
 #include "fileexplorer.h"
-#include "findandreplace.h"
+#include "find.h"
 
-char currentDir[1000] = ".";
 
 char mainMenu(){
     system("stty raw");
@@ -31,9 +30,9 @@ char mainMenu(){
 
 int main(void)
 {
-//    realpath(".", currentDir);
-//    printf(".\t%s\n", currentDir);
-//    getchar();
+    char currentDir[1000];
+    realpath(".", currentDir);
+
     int loopFlag = 1;
     while(loopFlag){
         char selection = mainMenu();
@@ -42,7 +41,7 @@ int main(void)
             fileExplorer(currentDir);
             break;
         case '2':
-            findAndReplace();
+            findAndReplace(currentDir);
             break;
         case '3':
             showLog();
